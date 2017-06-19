@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, redirect
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -29,25 +29,17 @@ time_form = """
     <style>
       .error {{ color: red; }}
     </style>
-
     <h1>Validate Time</h1>
-
     <form method='POST'>
-
       <label>Hours (24-Hours Format)
         <input name="hours" type="text" value='{hours}' />
       </label>
-
       <p class="error">{hours_error}</p>
-
       <label>Minutes
         <input name="minutes" type="text" value='{minutes}' />
       </label>
-
       <p class="error">{minutes_error}</p>
-
       <input type="submit" value="Validate" />
-
     </form>
 """
 
@@ -90,20 +82,16 @@ def validate_time():
             minutes = ''
 
     if not minutes_error and not hours_error:
-        return "Success!"
+        time = str(hours) + ':' + str(minutes)
+        return redirect('/valid-time?time={0}'.format(time))
     else:
-        return time_form.format(hours_error = hours_error, minutes_error = minutes_error, hours = hours, minutes = minutes)
+        return time_form.format(hours_error = hours_error, 
+          minutes_error = minutes_error, 
+          hours = hours, minutes = minutes)
+
+@app.route('/valid-time')
+def valid_time():
+    time = request.args.get('time')
+    return '<h1>You submitted {0}. Thanks for submitting a valid time!</h1>'.format(time)
 
 app.run()
-
-
-
-
-
-
-
-
-
-
-
-
