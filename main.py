@@ -1,19 +1,20 @@
 from flask import Flask, request, redirect
+import cgi
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
 
 form = """
-    <!DOCTYPE html>
-    <html>
-      <body>
-        <form action="/hello" method="post">
-          <label for="first_name">First Name:</label>
-          <input id="first_name" type="text" name="first_name" />
-          <input type="submit" />
-        </form>
-      <body>
-    </html>
+<!DOCTYPE html>
+<html>
+  <body>
+    <form action="/hello" method="post">
+      <label for="first_name">First Name:</label>
+      <input id="first_name" type="text" name="first_name" />
+      <input type="submit" />
+    </form>
+  <body>
+</html>
 """
 
 @app.route("/")
@@ -23,24 +24,24 @@ def index():
 @app.route("/hello", methods=['POST'])
 def hello():
     first_name = request.form['first_name']
-    return '<h1>Hello, ' + first_name + '</h1>'
+    return '<h1>Hello, ' + cgi.escape(first_name) + '</h1>'
 
 time_form = """
-    <style>
-      .error {{ color: red; }}
-    </style>
-    <h1>Validate Time</h1>
-    <form method='POST'>
-      <label>Hours (24-Hours Format)
-        <input name="hours" type="text" value='{hours}' />
-      </label>
-      <p class="error">{hours_error}</p>
-      <label>Minutes
-        <input name="minutes" type="text" value='{minutes}' />
-      </label>
-      <p class="error">{minutes_error}</p>
-      <input type="submit" value="Validate" />
-    </form>
+<style>
+  .error {{ color: red; }}
+</style>
+<h1>Validate Time</h1>
+<form method='POST'>
+  <label>Hours (24-Hours Format)
+    <input name="hours" type="text" value='{hours}' />
+  </label>
+  <p class="error">{hours_error}</p>
+  <label>Minutes
+    <input name="minutes" type="text" value='{minutes}' />
+  </label>
+  <p class="error">{minutes_error}</p>
+  <input type="submit" value="Validate" />
+</form>
 """
 
 @app.route('/validate-time')
